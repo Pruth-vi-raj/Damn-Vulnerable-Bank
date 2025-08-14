@@ -26,3 +26,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           TRIVY_RUN_AS_PLUGIN: 'aqua'
           # For http/https proxy configuration add env vars: HTTP_PROXY/HTTPS_PROXY, CA-CRET (path to CA certificate)
+      
+      - name: AquaSec Image Scan
+        run: |
+          docker pull nginx
+          docker run -v /var/run/docker.sock:/var/run/docker.sock registry.aquasec.com/scanner:2504.1.13 scan \
+          -H ${{secrets.AQUA_IMG_SCAN_HOST}} \
+          -A ${{secrets.AQUA_IMG_SCAN_TOKEN}} \
+          --local "nginx" \
+          --socket docker --register --registry "EI_CI_BRITE-RnD-ACI-BRITE_Registry"
